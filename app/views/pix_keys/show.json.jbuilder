@@ -1,0 +1,1 @@
+json.extract! @pix_key, :transaction_id, :amount, :merchant_name, :merchant_city, :key

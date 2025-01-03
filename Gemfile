@@ -63,3 +63,6 @@ gem 'omniauth-rails_csrf_protection'
 
 # pro bootstrap
 gem 'sassc-rails'
+
+# gem pix
+gem 'qrcode_pix_ruby'

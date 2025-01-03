@@ -1,0 +1,65 @@
+
+<div class="pattern-overlay" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;opacity: 0.05;background-image: repeating-linear-gradient(45deg,
+      #ffffff 0,        #ffffff 2px,transparent 2px,transparent 8px);pointer-events: none;z-index: 0;"></div>
+
+<div class="page-container" style="min-height: 100vh;backdrop-filter: blur(10px);padding: 2rem 0;">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-lg" style="background-color: #1B3B6F;">
+          <div class="card-body">
+            <!-- Pocket-styled container -->
+            <div class="border border-2 border-warning p-4 rounded" style="border-style: dashed !important;">
+              <!-- Header -->
+              <div class="text-center mb-4">
+                <h2 class="text-light mb-0">Detalhes do Pix</h2>
+                <small class="text-warning">Escaneie ou copie o código</small>
+              </div>
+
+              <!-- QR Code Section -->
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="bg-light rounded p-3 text-center h-100 d-flex flex-column justify-content-center">
+                    <h5 class="text-dark mb-3">QR Code</h5>
+                    <img src="<%= @pix_key.pix_qrcode %>" alt="QR Code" class="img-fluid mx-auto" style="max-width: 200px;">
+                  </div>
+                </div>
+
+                <!-- Pix Copy Section -->
+                <div class="col-md-6">
+                  <div class="bg-light rounded p-3 h-100 d-flex flex-column justify-content-center">
+                    <h5 class="text-dark mb-3">Pix Copia e Cola</h5>
+                    <div class="input-group">
+                      <input type="text" class="form-control" value="<%= @pix_key.pix_copia_e_cola %>" id="pixCode" readonly>
+                      <button class="btn btn-warning" onclick="copyPixCode()">
+                        <i class="fas fa-copy"></i>
+                      </button>
+                    </div>
+                    <small class="text-muted mt-2">Clique no botão para copiar</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Back Button -->
+              <div class="text-center mt-4">
+                <%= link_to 'Voltar', pix_keys_path, class: 'btn btn-warning' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for copy function -->
+<script>
+  function copyPixCode() {
+    var pixCode = document.getElementById('pixCode');
+    pixCode.select();
+    document.execCommand('copy');
+    
+    // Optional: Add a temporary tooltip or alert to show it was copied
+    alert('Código Pix copiado!');
+  }
+</script>

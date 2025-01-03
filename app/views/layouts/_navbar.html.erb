@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg" style="background-color: #1B3B6F;">
+  <div class="container">
+    <!-- Logo/Brand -->
+    <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2 text-warning" do %>
+      <i class="fas fa-wallet fa-lg"></i>
+      <span class="fw-bold">Pix-Pocket</span>
+    <% end %>
+
+    <!-- Toggler para mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
+            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Conteúdo da navbar -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto">
+        <% if user_signed_in? %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light" href="#" role="button" 
+               data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-circle me-1"></i>
+              <%= current_user.email %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <!-- Opções do usuário -->
+              <%= link_to "Minhas Chaves", pix_keys_path, class: "dropdown-item" %>
+              <div class="dropdown-divider"></div>
+              <%= button_to "Sair", destroy_user_session_path, method: :delete, 
+                  class: "dropdown-item text-danger", form: { "data-turbo" => "false" } %>
+            </ul>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to new_user_session_path, class: "nav-link text-light" do %>
+              <i class="fas fa-sign-in-alt me-1"></i>
+              Entrar
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <%= link_to new_user_registration_path, 
+                class: "btn btn-warning ms-2 d-flex align-items-center gap-1" do %>
+              <i class="fas fa-user-plus"></i>
+              Criar Conta
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

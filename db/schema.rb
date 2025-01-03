@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_30_173157) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_02_175936) do
+  create_table "pix_keys", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "key", null: false
+    t.integer "key_type", null: false
+    t.string "registered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "merchant_name", null: false
+    t.string "merchant_city", null: false
+    t.text "description"
+    t.text "postal_code", null: false
+    t.decimal "amount", precision: 10, scale: 2
+    t.string "transaction_id", limit: 25
+    t.boolean "repeatable", default: false
+    t.index ["user_id"], name: "index_pix_keys_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -27,4 +44,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_30_173157) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "pix_keys", "users"
 end

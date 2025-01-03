@@ -1,0 +1,197 @@
+<div class="container mt-4 text-light">
+  <%= form_with(model: pix_key, class: "needs-validation") do |form| %>
+    <% if pix_key.errors.any? %>
+      <div class="alert alert-danger">
+        <h4 class="alert-heading"><%= pluralize(pix_key.errors.count, "erro") %> impediram que esta chave Pix fosse salva:</h4>
+        <ul class="mb-0">
+          <% pix_key.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <%= form.label :key, "Chave", class: "form-label" %>
+        <%= form.text_field :key, class: "form-control pix-key-input" %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= form.label :key_type, "Tipo de Chave", class: "form-label" %>
+        <%= form.select :key_type, 
+          [
+            ['CPF', 'cpf'],
+            ['E-mail', 'email'],
+            ['Celular', 'phone'],
+            ['Chave Aleatória', 'random']
+          ],
+          {},
+          { class: "form-select", id: "key-type-select" }
+        %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <%= form.label :merchant_name, "Nome do Comerciante", class: "form-label" %>
+        <%= form.text_field :merchant_name, class: "form-control" %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= form.label :merchant_city, "Cidade do Comerciante", class: "form-label" %>
+        <%= form.text_field :merchant_city, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :description, "Descrição", class: "form-label" %>
+      <%= form.text_area :description, class: "form-control", rows: 3 %>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <%= form.label :postal_code, "CEP", class: "form-label" %>
+        <%= form.text_field :postal_code, class: "form-control cep-mask", maxlength: 9 %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= form.label :registered_at, "Instituição registrada", class: "form-label" %>
+        <%= form.text_field :registered_at, class: "form-control" %>
+      </div>
+
+      <!--<div class="col-md-4 mb-3">
+        <%= form.label :amount, "Valor", class: "form-label" %>
+        <div class="input-group">
+          <span class="input-group-text">R$</span>
+          <%= form.text_field :amount, class: "form-control money-mask" %>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <%= form.label :transaction_id, "ID da Transação", class: "form-label" %>
+        <%= form.text_field :transaction_id, class: "form-control", maxlength: 25 %>
+      </div>-->
+    </div>
+
+    <div class="row">
+      <!--<div class="col-md-6 mb-3">
+        <%= form.label :user_id, "ID do Usuário", class: "form-label" %>
+        <%= form.number_field :user_id, class: "form-control" %>
+      </div>-->
+    </div>
+
+    <div class="mb-3 form-check">
+      <%= form.check_box :repeatable, class: "form-check-input" %>
+      <%= form.label :repeatable, "Permitir Múltiplos Pagamentos?", class: "form-check-label" %>
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+      <%= link_to "Cancelar", pix_keys_path, class: "btn btn-secondary me-md-2" %>
+      <%= form.submit "Salvar Chave Pix", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
+
+<%# não funciona mas seria interessante implementar mascara para o campo da chave pix %>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    # // Funções de máscara
+    const masks = {
+      cpf(value) {
+        return value
+          .replace(/\D/g, '')
+          .replace(/(\d{3})(\d)/, '$1.$2')
+          .replace(/(\d{3})(\d)/, '$1.$2')
+          .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+          .replace(/(-\d{2})\d+?$/, '$1');
+      },
+      
+      cnpj(value) {
+        return value
+          .replace(/\D/g, '')
+          .replace(/(\d{2})(\d)/, '$1.$2')
+          .replace(/(\d{3})(\d)/, '$1.$2')
+          .replace(/(\d{3})(\d)/, '$1/$2')
+          .replace(/(\d{4})(\d)/, '$1-$2')
+          .replace(/(-\d{2})\d+?$/, '$1');
+      },
+      
+      phone(value) {
+        return value
+          .replace(/\D/g, '')
+          .replace(/(\d{2})(\d)/, '($1) $2')
+          .replace(/(\d{5})(\d)/, '$1-$2')
+          .replace(/(-\d{4})\d+?$/, '$1');
+      },
+      
+      cep(value) {
+        return value
+          .replace(/\D/g, '')
+          .replace(/(\d{5})(\d)/, '$1-$2')
+          .replace(/(-\d{3})\d+?$/, '$1');
+      },
+      
+      money(value) {
+        const cleanValue = value.replace(/\D/g, '');
+        const options = { minimumFractionDigits: 2 };
+        const result = new Intl.NumberFormat('pt-BR', options).format(
+          cleanValue / 100
+        );
+        return result;
+      }
+    };
+
+    # // Função que aplica a máscara
+    function applyMask(event, maskFunction) {
+      const input = event.target;
+      const value = input.value;
+      const newValue = maskFunction(value);
+      
+      if (value !== newValue) {
+        input.value = newValue;
+      }
+    }
+
+    # // Função para atualizar a máscara da chave Pix
+    function updatePixKeyMask() {
+      const keyType = document.getElementById('key-type-select').value;
+      console.log(keyType);
+      const keyInput = document.querySelector('.pix-key-input');
+      
+      # // Remove os event listeners anteriores
+      keyInput.removeEventListener('input', handlePixKeyInput);
+      
+      # // Aplica o novo event listener baseado no tipo
+      switch(keyType) {
+        # case '0': // CPF
+          keyInput.maxLength = 14;
+          keyInput.addEventListener('input', e => applyMask(e, masks.cpf));
+          break;
+        # case '1': // CNPJ
+          keyInput.maxLength = 18;
+          keyInput.addEventListener('input', e => applyMask(e, masks.cnpj));
+          break;
+        # case '3': // Celular
+          keyInput.maxLength = 15;
+          keyInput.addEventListener('input', e => applyMask(e, masks.phone));
+          break;
+        default:
+          keyInput.maxLength = 255;
+          break;
+      }
+    }
+
+    # // Aplicando as máscaras aos campos
+    document.querySelector('.cep-mask').addEventListener('input', e => applyMask(e, masks.cep));
+    document.querySelector('.money-mask').addEventListener('input', e => applyMask(e, masks.money));
+    
+    # // Atualizando máscara da chave Pix quando o tipo muda
+    const keyTypeSelect = document.getElementById('key-type-select');
+    keyTypeSelect.addEventListener('change', updatePixKeyMask);
+    
+    # // Aplica a máscara inicial da chave Pix
+    updatePixKeyMask();
+  });
+</script>

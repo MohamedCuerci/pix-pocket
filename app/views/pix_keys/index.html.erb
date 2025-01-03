@@ -1,0 +1,42 @@
+<%# botão pra criar nova chave pix %>
+<div class="container py-4">
+  <h1 class="mb-4 text-center text-light">Chaves Pix</h1>
+
+  <%= link_to new_pix_key_path, class: "btn btn-warning btn-lg shadow-sm d-flex align-items-center gap-2 mx-auto mb-4", style: "max-width: fit-content;" do %>
+    <i class="fas fa-plus-circle"></i>
+    <span>Adicionar nova chave Pix</span>
+  <% end %>
+  
+  <div class="row">
+    <% @pix_keys.each do |pix_key| %>
+      <div class="col-md-12 col-sm-6 mb-4">
+        <div class="card h-100 shadow bordered-card" style="background-color: #1B3B6F">
+          <div class="card-body text-light" style="border: 3px dashed #8e5f06e8; border-radius: 8px; padding: 16px;">
+            <div class="row d-flex flex-column flex-md-row justify-content-between align-items-center">
+              <div class="info-pix-key col-md-6 mb-3 mb-md-0">
+                <p class="card-text">
+                  <strong>Chave:</strong> <%= pix_key.key %>
+                </p>
+                <p class="card-text">
+                  <strong>Tipo:</strong> <%= pix_key.key_type %>
+                </p>
+                <p class="card-text">
+                  Descrição: <%= pix_key.description %>
+                </p>
+              </div>
+              <div class="qrcode-div col-md-6 text-end">
+                <%# preciso alinhar o qrcode no meio %>
+                <%# esse link leva pra show do pixkey onde vai ter o qrcode copia e cola %>
+                <%= link_to pix_key_path(pix_key.id), class: "nav-link text-light" do %>
+                  <p>Acessar qrcode</p>
+                  <i class="fa-solid fa-qrcode fa-xl" style="color: #fafafa;"></i>
+                <% end %>
+                <!-- <img src="seu_qrcode_url_aqui" alt="QR Code" class="img-fluid"> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
